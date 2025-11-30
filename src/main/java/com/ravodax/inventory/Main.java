@@ -1,77 +1,61 @@
 package com.ravodax.inventory;
 
 import com.ravodax.inventory.model.*;
-import com.ravodax.inventory.service.*;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 
 import java.util.Arrays;
 
-@SpringBootApplication
-public class Main implements CommandLineRunner {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final CategoryService categoryService;
-    private final ProductService productService;
-    private final RoleService roleService;
-    private final UserService userService;
-    private final OrderService orderService;
-
-    public Main(CategoryService categoryService,
-                ProductService productService,
-                RoleService roleService,
-                UserService userService,
-                OrderService orderService) {
-        this.categoryService = categoryService;
-        this.productService = productService;
-        this.roleService = roleService;
-        this.userService = userService;
-        this.orderService = orderService;
-    }
-
+public class Main {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-    }
 
-    @Override
-    public void run(String... args) throws Exception {
         // --- Создание категорий ---
-        Category electronics = categoryService.createCategory(new Category(0, "Electronics"));
-        Category food = categoryService.createCategory(new Category(0, "Food"));
+        Category electronics = new Category(1, "Electronics");
+        Category food = new Category(2, "Food");
 
         // --- Создание товаров ---
-        Product laptop = productService.createProduct(new Product(0, "Laptop", electronics, 10, 1200.0));
-        Product phone = productService.createProduct(new Product(0, "Smartphone", electronics, 5, 800.0));
-        Product apple = productService.createProduct(new Product(0, "Apple", food, 50, 1.2));
+        Product laptop = new Product(1, "Laptop", electronics, 10, 1200.0);
+        Product phone = new Product(2, "Smartphone", electronics, 5, 800.0);
+        Product apple = new Product(3, "Apple", food, 50, 1.2);
+
+        System.out.println("PRODUCTS:");
+        System.out.println(laptop);
+        System.out.println(phone);
+        System.out.println(apple);
+        System.out.println();
 
         // --- Создание ролей ---
-        Role adminRole = roleService.createRole(new Role(0, "ADMIN"));
+        Role adminRole = new Role(1, "ADMIN");
 
         // --- Создание пользователя ---
-        User admin = userService.createUser(new User(0, "admin", "12345", adminRole));
+        User admin = new User(1, "admin", "12345", adminRole);
 
-        // --- Создание заказа ---
+        System.out.println("USER:");
+        System.out.println(admin);
+        System.out.println();
+
+        // --- Создание элементов заказа ---
         OrderItem item1 = new OrderItem(laptop, 1);
         OrderItem item2 = new OrderItem(apple, 10);
 
-        Order order = new Order();
-        order.setUser(admin);
-        order.setItems(Arrays.asList(item1, item2));
-        order.setStatus(OrderStatus.CREATED);
+        // --- Создание списка товаров в заказе ---
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(item1);
+        orderItems.add(item2);
 
-        orderService.createOrder(order);
+        // --- Создание заказа ---
+        Order order = new Order(1, admin, orderItems, OrderStatus.CREATED);
 
-        // --- Вывод ---
-        System.out.println("CATEGORIES:");
-        categoryService.getAllCategories().forEach(System.out::println);
+        System.out.println("ORDER:");
+        System.out.println(order);
 
-        System.out.println("\nPRODUCTS:");
-        productService.getAllProducts().forEach(System.out::println);
+        // --- Подробный вывод ---
+        System.out.println("\nORDER ITEMS:");
+        orderItems.forEach(System.out::println);
 
-        System.out.println("\nUSERS:");
-        userService.getAllUsers().forEach(System.out::println);
-
-        System.out.println("\nORDERS:");
-        orderService.getAllOrders().forEach(System.out::println);
+        System.out.println("\nTotal price: " + order.getTotalPrice());
+        System.out.println("Order status: " + order.getStatus());
     }
 }

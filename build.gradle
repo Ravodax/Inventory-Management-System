@@ -1,15 +1,18 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.2'
-    id 'io.spring.dependency-management' version '1.1.3'
+    id 'application'
 }
 
-group = 'com.ravodax'
-version = '1.0-SNAPSHOT'
+group 'com.ravodax'
+version '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
-    targetCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+application {
+    mainClass = 'com.ravodax.inventory.Main'
 }
 
 repositories {
@@ -17,25 +20,9 @@ repositories {
 }
 
 dependencies {
-    // Основной Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter'
-
-    // Spring Data JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // Встроенная база данных H2
-    runtimeOnly 'com.h2database:h2'
-
-    // Для тестов
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }
