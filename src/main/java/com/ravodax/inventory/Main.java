@@ -1,61 +1,44 @@
 package com.ravodax.inventory;
 
-import com.ravodax.inventory.model.*;
-
-
-import java.util.Arrays;
-
-import java.util.ArrayList;
+import com.ravodax.inventory.ConsoleApp.*;
+import com.ravodax.inventory.service.UserDAO;
+import com.ravodax.inventory.model.User;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
-        // --- Создание категорий ---
-        Category electronics = new Category(1, "Electronics");
-        Category food = new Category(2, "Food");
+        UserDAO userDAO = new UserDAO();
+        List<User> users = userDAO.getAllUsers();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Login: ");
+        String log = scanner.nextLine();
+        System.out.print("Enter Password: ");
+        String pasw = scanner.nextLine();
+        for (int i = 0; i != users.size(); ++i) {
+            if (users.get(i).getUsername().equals(log)) {
+                if (users.get(i).getPassword().equals(pasw)) {
+                    System.out.print("login!");
+                    if (users.get(i).getRole().getId() == 3) {
+                        ConsoleUsers v = new ConsoleViewer(users.get(i).getId());
+                        ConsoleApp app = new ConsoleApp(v);
+                    }
+                    if (users.get(i).getRole().getId() == 2) {
+                        ConsoleUsers v = new ConsoleManager(users.get(i).getId());
+                        ConsoleApp app = new ConsoleApp(v);
+                    }
+                    if (users.get(i).getRole().getId() == 1) {
+                        ConsoleUsers v = new ConsoleAdmin(users.get(i).getId());
+                        ConsoleApp app = new ConsoleApp(v);
+                    }
 
-        // --- Создание товаров ---
-        Product laptop = new Product(1, "Laptop", electronics, 10, 1200.0);
-        Product phone = new Product(2, "Smartphone", electronics, 5, 800.0);
-        Product apple = new Product(3, "Apple", food, 50, 1.2);
-
-        System.out.println("PRODUCTS:");
-        System.out.println(laptop);
-        System.out.println(phone);
-        System.out.println(apple);
-        System.out.println();
-
-        // --- Создание ролей ---
-        Role adminRole = new Role(1, "ADMIN");
-
-        // --- Создание пользователя ---
-        User admin = new User(1, "admin", "12345", adminRole);
-
-        System.out.println("USER:");
-        System.out.println(admin);
-        System.out.println();
-
-        // --- Создание элементов заказа ---
-        OrderItem item1 = new OrderItem(laptop, 1);
-        OrderItem item2 = new OrderItem(apple, 10);
-
-        // --- Создание списка товаров в заказе ---
-        List<OrderItem> orderItems = new ArrayList<>();
-        orderItems.add(item1);
-        orderItems.add(item2);
-
-        // --- Создание заказа ---
-        Order order = new Order(1, admin, orderItems, OrderStatus.CREATED);
-
-        System.out.println("ORDER:");
-        System.out.println(order);
-
-        // --- Подробный вывод ---
-        System.out.println("\nORDER ITEMS:");
-        orderItems.forEach(System.out::println);
-
-        System.out.println("\nTotal price: " + order.getTotalPrice());
-        System.out.println("Order status: " + order.getStatus());
+                }
+                else {
+                    System.out.print("NO login!");
+                }
+            }
+        }
+        scanner.close();
     }
 }
