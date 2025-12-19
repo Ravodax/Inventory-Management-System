@@ -63,4 +63,40 @@ public class InventoryTransactionDAO {
             e.printStackTrace();
         }
     }
+
+    public void printIncomeAndExpenses() {
+        String sql = """
+            SELECT status, SUM(quantity * price) AS total
+            FROM inventory_transactions
+            GROUP BY status
+            """;
+
+        double income = 0.0;
+        double expenses = 0.0;
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                double total = rs.getDouble("total");
+
+                if ("SALE".equalsIgnoreCase(status)) {
+                    income = total;
+                } else if ("RESTOCK".equalsIgnoreCase(status)) {
+                    expenses = total;
+                }
+            }
+
+            System.out.println("=== Financial summary ===");
+            System.out.println("Income (SALE): " + income);
+            System.out.println("Expenses (RESTOCK): " + expenses);
+            System.out.println("Profit: " + (income - expenses));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

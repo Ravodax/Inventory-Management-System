@@ -10,10 +10,6 @@ import java.util.List;
 public class OrderDAO {
 
     private final String url = "jdbc:sqlite:test2.db";
-
-    // ------------------------
-    // СОЗДАНИЕ ЗАКАЗА
-    // ------------------------
     public long createOrder(Order order, List<OrderItem> items) {
         String sqlOrder = """
                 INSERT INTO orders (user_id, total_price, status, created_at)

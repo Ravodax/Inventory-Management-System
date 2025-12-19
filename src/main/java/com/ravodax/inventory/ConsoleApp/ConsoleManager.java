@@ -33,6 +33,9 @@ public class ConsoleManager extends ConsoleViewer{
         if (name.equals("Print trans")) {
             printInventoryTrans();
         }
+        if (name.equals("Print profit")) {
+            printIncomeAndExpenses();
+        }
     }
 
     public void addQuantityProduct(Scanner scanner) {
@@ -72,5 +75,10 @@ public class ConsoleManager extends ConsoleViewer{
     public void printInventoryTrans() {
         InventoryTransactionDAO it = new InventoryTransactionDAO();
         it.printAllTransactions();
+    }
+
+    public void printIncomeAndExpenses() {
+        InventoryTransactionDAO it = new InventoryTransactionDAO();
+        it.printIncomeAndExpenses();
     }
 }
